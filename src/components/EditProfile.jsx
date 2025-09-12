@@ -1,6 +1,7 @@
 import { useState } from "react";
-import Navbar from "./NavBar";
+
 import { useDropzone } from 'react-dropzone';
+import Navbar from "./Navbar";
 const allTags = [
     "FOOD",
     "TRAVEL",
@@ -35,6 +36,37 @@ const EditProfile = () => {
         }
     }
 
+    const hitCreatePinApi = async () => {
+        try {
+            // const user = JSON.parse(localStorage.getItem("userDetail"));
+            // const res = await fetch("/api/user_profile", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify({ email: user.email, name: user.name, tagsPreference: selectedTags, id: user.id })
+            // });
+
+            // const data = await res.json();
+            // // console.log("profile success:", data);body: JSON.stringify({ email:"sikri.ayushi@gmail.com",name:"Ayushi Sikri",tagsPreference:selectedTags,id:1 })
+
+            // if (data.message === "Successful Profile Created") {
+                alert("in prifile api ");
+            //     console.log("profile success:", data);
+            //     // sign up-> ask for preference(dummy) -> profile api hit ({"fullName","","","email","preference"})-> in actual profile({"fullName","profileImageUrl","about","email","preference","id"})
+            // }
+            // else if (!res.ok) {
+            //     throw new Error("Profile Creation failed");
+            // }
+
+        } catch (err) {
+            // console.error("Error:", err);
+            alert("Profile Creation failed!");
+            //  setMessage("error");
+            //  setModalType(err.message);
+        }
+    }
+
     return (
         <div style={{
             // width: "100%",
@@ -42,7 +74,6 @@ const EditProfile = () => {
             // display: "flex",
             // alignItems: "center",
         }}>
-
             <Navbar navIn="loggedIn" />
             <div style={{
                 paddingTop: "2rem",
@@ -140,7 +171,7 @@ const EditProfile = () => {
                                 justifyContent: "center"
                             }} {...getRootProps()} >
                                 <button
-                                    onClick={() => hitCreatePinApi()}
+                                    // onClick={() => hitCreatePinApi()}
                                     style={{
                                         backgroundColor: "#dfdfdfff",
                                         color: "black",

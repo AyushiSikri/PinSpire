@@ -77,6 +77,7 @@ const Navbar = (props) => {
     const [name, setName] = useState("");
     const [userDetails, setUserDetails] = useState({});
     const [selectedTags, setSelectedTags] = useState([]);
+    // const [profileDetail, setProfileDetail] = useState({});
 
     const toggleTag = (tag) => {
         if (selectedTags.includes(tag)) {
@@ -86,41 +87,9 @@ const Navbar = (props) => {
         }
     }
 
-    fetch("/api/auth/hello")
-        .then(res => res.text())
-        .then(data => console.log(data));
-
-    const hitProfileApi = async () => {
-        try {
-            const user = JSON.parse(localStorage.getItem("userDetail"));
-            const res = await fetch("/api/user_profile", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: user.email, name: user.name, tagsPreference: selectedTags, id: user.id })
-            });
-
-            const data = await res.json();
-            // console.log("profile success:", data);body: JSON.stringify({ email:"sikri.ayushi@gmail.com",name:"Ayushi Sikri",tagsPreference:selectedTags,id:1 })
-
-            if (data.message === "Successful Profile Created") {
-                alert("Success " + data);
-                console.log("profile success:", data);
-                // sign up-> ask for preference(dummy) -> profile api hit ({"fullName","","","email","preference"})-> in actual profile({"fullName","profileImageUrl","about","email","preference","id"})
-            }
-            else if (!res.ok) {
-                throw new Error("Profile Creation failed");
-            }
-
-        } catch (err) {
-            // console.error("Error:", err);
-            alert("Profile Creation failed!");
-            //  setMessage("error");
-            //  setModalType(err.message);
-        }
-    }
-
+    // fetch("/api/auth/hello")
+    //     .then(res => res.text())
+    //     .then(data => console.log(data));
 
     const hitAutoLogin = async (email, password) => {
         try {
@@ -145,6 +114,47 @@ const Navbar = (props) => {
             }
         } catch (e) {
             alert(e);
+        }
+    }
+
+    const hitProfileApi = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem("userDetail"));
+            const res = await fetch("/api/user_profile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: user?.email, fullName: user?.name, tagsPreference: selectedTags, id: user?.id })
+            });
+
+            const data = await res.json();
+            // console.log("profile success:", data);body: JSON.stringify({ email:"sikri.ayushi@gmail.com",name:"Ayushi Sikri",tagsPreference:selectedTags,id:1 })
+
+            if (data.message === "Successful Profile Created") {
+                alert("Success " + JSON.stringify(data));
+                console.log("profile success:");
+                localStorage.setItem("profileDetail", JSON.stringify({
+                    "email": data?.profile?.email,
+                    "fullName": data?.profile?.fullName,
+                    "about": data?.profile?.about,
+                    "profileImageUrl": data?.profile?.profileImageUrl,
+                    "tagsPreference": data?.profile?.tagsPreference,
+                }));
+                const profileDetail = localStorage.getItem("profileDetail");
+                console.log("Success " + profileDetail);
+                navigate("/_tabNavigationHome");
+                // sign up-> ask for preference(dummy) -> profile api hit ({"fullName","","","email","preference"})-> in actual profile({"fullName","profileImageUrl","about","email","preference","id"})
+            }
+            else if (!res.ok) {
+                throw new Error("Profile Creation failed");
+            }
+
+        } catch (err) {
+            // console.error("Error:", err);
+            alert("Profile Creation failed!");
+            //  setMessage("error");
+            //  setModalType(err.message);
         }
     }
 
@@ -198,7 +208,7 @@ const Navbar = (props) => {
     }
 
 
-    // console.log("In NavBar " + isModalOpen);
+    // console.log("In Navbar " + isModalOpen);
     return (
         <>
 

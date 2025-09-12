@@ -10,14 +10,14 @@ public class ProfileDTO {
     private String profileImageUrl; // optional
     private String email;
     private List<String> tagsPreference;
-    private User user;
+    // private User user;
 
     // Constructors
     public ProfileDTO() {}
 
-    public ProfileDTO(User user) {
-        this.user = user;
-    }
+    // public ProfileDTO(User user) {
+    //     this.user = user;
+    // }
 
     public Long getId() {
 
@@ -68,13 +68,13 @@ public class ProfileDTO {
         this.tagsPreference = tagsPreference;
     }
 
-    public User getUser() {
-        return user;
-    }
+    // public User getUser() {
+    //     return user;
+    // }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // public void setUser(User user) {
+    //     this.user = user;
+    // }
 
     
 }

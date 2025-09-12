@@ -45,16 +45,16 @@ public class UserService {
         try {
             // Find user by email
             Optional<User> userOptional = userRepository.findByEmail(userLogin.getEmail());
-            
+
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 // TODO: Use password encoder to compare encrypted passwords
                 // return passwordEncoder.matches(userLogin.getPassword(), user.getPassword());
-                
+
                 // For now, simple string comparison (NOT SECURE - use password encoder)
                 return user.getPassword().equals(userLogin.getPassword());
             }
-            
+
             return false;
         } catch (Exception e) {
             // Log the error

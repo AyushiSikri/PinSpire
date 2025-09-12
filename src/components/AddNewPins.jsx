@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "./NavBar";
+import Navbar from "./Navbar";
 import { useDropzone } from 'react-dropzone';
 
 const allTags = [

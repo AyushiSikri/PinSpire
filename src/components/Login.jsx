@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import pinterestBackground from "../assets/pinterestBackground.jpg";
 import googleIcon from "../assets/googleIcon.png";
-import Navbar from "./NavBar";
+import Navbar from "./Navbar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import MessageModal from "./MessageModal";
@@ -31,62 +31,103 @@ const Explore = () => {
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", },
+                headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ email: email, password: password })
             });
 
             const data = await res.json();
             
             if (res.ok && data.message === "Success") {
-                localStorage.clear();
+                // localStorage.clear();
                 localStorage.setItem("token", data.token);
                 setMessage(data.message);
-                setModalType("success");
-                navigate("/_tabNavigationHome");
+                //setModalType("success");
+                // hitProfileApi();
+                // navigate("/_tabNavigationHome");
             } else if (res.status === 401) {
                 setMessage(data.message);
-                setModalType("error");
+                //setModalType("error");
                 // alert(data.message);
             } else if (res.status === 500) {
-                setModalType("error");
+                //setModalType("error");
                 setMessage(data.message);
                 // alert(data.message);
             } else {
-                setModalType("error");
+                //setModalType("error");
                 setMessage("Login Failed");
                 // alert(data || "Login failed");
             }
             // alert(data);
             // if (res.ok && data === "Success") {
             //     setMessage("Success");
-            //     setModalType("success");
+            //     //setModalType("success");
             //     // navigate("/_profile");
             // } else if (res.status === 401) {
             //     setMessage("Invalid email or password!");
-            //     setModalType("error");
+            //     //setModalType("error");
             //     alert("Invalid email or password!");
             // } else if (res.status === 500) {
-            //     setModalType("Server error. Please try again later.");
+            //     //setModalType("Server error. Please try again later.");
             //     alert("Server error. Please try again later.");
             // } else {
-            //     setModalType(data || "Login failed");
+            //     //setModalType(data || "Login failed");
             //     alert(data || "Login failed");
             // }
 
         } catch (e) {
-            setModalType("error");
+            //setModalType("error");
             // setMessage(e.message);
             alert(e.message);
             console.log(e);
             // alert("Network error. Please check your connection.");
         }
+        finally{
+            hitProfileApi();
+        }
     }
 
-    //   useEffect(() => {
-    //     fetch("/api/auth/hello")
-    //       .then(res => res.text())
-    //       .then(data => setMessage(data));
-    //   }, []);
+    const hitProfileApi = async () => {
+        try {
+        //    const res = await fetch("/api/get_user_profile", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ email: email })
+        // });
+
+          const res = await fetch(`/api/get_user_profile?email=${encodeURIComponent(email)}`, {
+            method: "POST",   // you can also make this GET, but POST will still work
+            headers: { "Content-Type": "application/json" }
+        });
+            const data = await res.json();
+
+            if (data.message === "Successful Profile Created") {
+                
+                // alert("Success " + JSON.stringify(data));
+              
+                localStorage.setItem("profileDetail", JSON.stringify({
+                    "email": data?.profile?.email,
+                    "fullName": data?.profile?.fullName,
+                    "about": data?.profile?.about,
+                    "profileImageUrl": data?.profile?.profileImageUrl,
+                    "tagsPreference": data?.profile?.tagsPreference,
+                }));
+
+                const profileDetail = localStorage.getItem("profileDetail");
+                console.log("Success " + profileDetail);
+
+                navigate("/_tabNavigationHome");
+            }
+            else if (!res.ok) {
+                throw new Error("Profile Creation failed");
+            }
+
+        } catch (err) {
+            // console.error("Error:", err);
+            // alert("Profile Creation failed!");
+            //  setMessage("error");
+            //  //setModalType(err.message);
+        }
+    }
 
     return (
 
@@ -344,7 +385,7 @@ const Explore = () => {
                 isOpen={!!modalType}
                 onClose={() => {
                     modalType === "success" ? navigate("/_profile"):null;
-                    setModalType(null);
+                    //setModalType(null);
                 }}
                 type={modalType}
                 message={
