@@ -4,9 +4,6 @@ import Navbar from "./Navbar";
 import { NavLink, Outlet } from "react-router-dom";
 const HomeFeed = () => {
 
-    // const images = Array.from({ length: 50 }, (_, i) => 
-    //   `https://picsum.photos/id/${100 + i}/300/${200 + (i % 5) * 70}`
-    // );
     const breakpointColumnsObj = {
         default: 5,
         1100: 4,
@@ -18,7 +15,6 @@ const HomeFeed = () => {
     const [category, setCategory] = useState([]);
 
     useEffect(() => {
-        // Run only once to set initial category
         const profile = JSON.parse(localStorage.getItem("profileDetail"));
         if (profile?.tagsPreference) {
             setCategory(profile.tagsPreference);
@@ -30,7 +26,6 @@ const HomeFeed = () => {
 
         const fetchImages = async () => {
             try {
-                // const res = await fetch(`/api/feed?category=${category}`);
                 const res = await fetch("/api/feed", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -52,61 +47,89 @@ const HomeFeed = () => {
         setBrokenImages(prev => new Set([...prev, src]));
     };
 
-    // const images = [
-    //     "https://picsum.photos/id/1015/300/200",
-    //     "https://picsum.photos/id/1016/300/350",
-    //     "https://picsum.photos/id/1018/300/400",
-    //     "https://picsum.photos/id/1019/300/250",
-    //     "https://picsum.photos/id/1020/300/500",
-    //     "https://picsum.photos/id/1021/300/300",
-    //     "https://picsum.photos/id/1024/300/450",
-    //     "https://picsum.photos/id/1025/300/370",
-    //     "https://picsum.photos/id/1027/300/280",
-    //     "https://picsum.photos/id/1031/300/420",
-    //     "https://picsum.photos/id/1033/300/260",
-    //     "https://picsum.photos/id/1035/300/390",
-    //     "https://picsum.photos/id/1036/300/470",
-    //     "https://picsum.photos/id/1037/300/320",
-    //     "https://picsum.photos/id/1040/300/410",
-    //     "https://picsum.photos/id/1041/300/360",
-    //     "https://picsum.photos/id/1042/300/280",
-    //     "https://picsum.photos/id/1043/300/500",
-    //     "https://picsum.photos/id/1044/300/230",
-    //     "https://picsum.photos/id/1045/300/450",
-    //     "https://picsum.photos/id/1036/300/470",
-    //     "https://picsum.photos/id/1021/300/300",
-    //     "https://picsum.photos/id/1035/300/390",
-    //     "https://picsum.photos/id/1042/300/280",
-    //     "https://picsum.photos/id/1018/300/400",
-    //     "https://picsum.photos/id/1036/300/470",
-    //     "https://picsum.photos/id/1041/300/360",
-    //     "https://picsum.photos/id/1037/300/320",
-    //     "https://picsum.photos/id/1040/300/410",
-    //     "https://picsum.photos/id/1043/300/500",
-    // ];
-
+   
     const styles = `
-    .my-masonry-grid {
-    display: flex;
-    // margin-left: -16px;
+    /* very specific selectors to avoid overrides */
+  .my-masonry-grid .my-masonry-grid_column .masonry-item {
+    position: relative;
+    break-inside: avoid;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .my-masonry-grid .my-masonry-grid_column .masonry-item img {
+    display:block;
+    width:100%;
+    // height:auto;
+    // width:auto;
+    transition: transform 0.35s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .my-masonry-grid .my-masonry-grid_column .masonry-item .overlay {
+    position: absolute;
+    inset: 0;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding:12px;
+    gap:8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    z-index: 9999; /* very high to beat any stacking contexts */
+    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.45) 100%);
+  }
+
+  .my-masonry-grid .my-masonry-grid_column .masonry-item:hover .overlay {
+    opacity: 1;
+    pointer-events: auto;    
+  }
+
+  .my-masonry-grid .my-masonry-grid_column .masonry-item:hover img {
+    // transform: scale(1.04);
+    transform: scale(1.02);
+  }
+
+  .hover-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: rgba(255,255,255,0.95);
+  }
+
+  .hover-btn.secondary {
+    background: rgba(0,0,0,0.6);
+    color: white;
+  }
+
+  /* Masonry grid base */
+  .my-masonry-grid {
+    display:flex;
     margin:10px;
-    gap:5px;
-    // background-color:red;
-    width: auto;
-    }
-    .my-masonry-grid_column {
-    // padding-left:0px;
-    background-clip: padding-box;
-    } 
-    .my-masonry-grid_column img {
-    width:98%; 
-    // background-color:blue;
-    // padding-top:5px;
+    gap:12px;
+  }
+  .my-masonry-grid_column { background-clip: padding-box; }
+  .my-masonry-grid_column img {
+    // width:100%;
     margin-top:10px;
     display: block;
     border-radius: 20px;
     }
-    `;
+    .masonry-item.short img {
+  height: 220px;   /* short cards */
+  object-fit: cover;
+}
+
+.masonry-item.tall img {
+  height: 350px;   /* tall cards */
+  object-fit: cover;
+}
+
+  `;
 
     // The background paints only inside the padding box.
     // That means: 
@@ -116,47 +139,30 @@ const HomeFeed = () => {
     return (
 
         <>
-            {/* <Navbar navIn="loggedIn" /> */}
-
-            <div style={{
-                // backgroundColor: "pink", 
-                // width: "100vw",
-                // marginLeft:"2rem",
-                // marginRight:"2rem",
-                // height:"100vh", 
-                marginTop: "0.3rem"
-            }}>
-
+            <div style={{ marginTop: "0.5rem" }}>
                 <style>{styles}</style>
                 <Masonry
                     breakpointCols={breakpointColumnsObj}
                     className="my-masonry-grid"
                     columnClassName="my-masonry-grid_column"
                 >
-                    {/* {images.map((src, index) => (
-                        <div key={index}>
-                            <img
-                                src={src}
-                                alt={`masonry-${index}`}
-                                onError={() => handleImageError(src)}
-                            />
-                        </div>
-                    ))} */}
                     {images
-                        .filter(src => !brokenImages.has(src))
-                        .map((src, index) => (
-                            <div key={`${src}-${index}`}>
-                                <img
-                                    src={src}
-                                    alt={`masonry-${index}`}
-                                    onError={() => handleImageError(src)}
-                                />
-                                <div>
-            <button>Save</button>
-          </div>
+                        .filter(src => !brokenImages.has(src)).map((src, idx) => {
+                            const sizeClass = idx % 2 === 0 ? "short" : "tall";
+                            return(
+                                <div
+                                className={`masonry-item ${sizeClass}`}
+                                key={idx}
+                            >
+                                <img src={src} alt={`masonry-${idx}`}
+                                    onError={() => handleImageError(src)} />
+                                <div className="overlay">
+                                    <button className="hover-btn" onClick={() => alert("Save " + idx)}>Save</button>
+                                    <button className="hover-btn secondary" onClick={() => alert("Like " + idx)}>Like</button>
+                                </div>
                             </div>
-                        ))
-                    }
+                            );
+                            })}
                 </Masonry>
             </div>
         </>

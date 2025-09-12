@@ -28,7 +28,7 @@ const Profile = () => {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-            paddingTop: "4rem",
+            paddingTop: "4.4rem",
         }}>
             {/* <div style={{
                 // marginTop:"7rem",
@@ -113,7 +113,8 @@ paddingTop: "4rem",
                     textAlign: "center",
                     fontSize: "1rem"
                     // fontWeight: "700"
-                }}>{profileDetail?.about}</p>
+                }}>{profileDetail?.email}</p>
+
                 {/* <div
                     style={{
                         // backgroundColor: "pink",
@@ -153,8 +154,8 @@ paddingTop: "4rem",
             <div style={{
                 display: "flex",
                 gap: "1rem",
-                margin: "1rem 0",
-                marginTop: "1.2rem",
+                margin: "1.2rem 0 0 0",
+                // marginTop: "1.2rem",
                 justifyContent: "center"
             }}>
                 <NavLink
@@ -163,7 +164,7 @@ paddingTop: "4rem",
                         textDecorationLine: isActive ? "underline" : "none",
                         textUnderlineOffset: "0.5rem",
                         color: "black",
-                        fontSize: "0.85rem",
+                        fontSize: "1rem",
                     })}
                 >
                     Created
@@ -175,7 +176,7 @@ paddingTop: "4rem",
                         textDecorationLine: isActive ? "underline" : "none",
                         color: "black",
                         textUnderlineOffset: "0.5rem",
-                        fontSize: "0.85rem",
+                        fontSize: "1rem",
                     })}
                 >
                     Saved

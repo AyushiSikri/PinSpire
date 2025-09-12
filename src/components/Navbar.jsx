@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useNavigation } from 'react-router-dom';
 import MessageModal from './MessageModal';
 // import './Navbar.css';
-const allTags = [
-    "FOOD",
-    "TRAVEL",
-    "ART",
-    "TECHNOLOGY",
-    "MUSIC",
-    "SPORTS",
-    "FASHION",
-    "NATURE",
-    "EDUCATION",
-    "HEALTH",
-];
+
+const allTags = {
+    "FOOD": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=400&fit=crop",
+    "TRAVEL": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop",
+    "ART": "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=400&fit=crop",
+    "TECHNOLOGY": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&h=400&fit=crop",
+    "MUSIC": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop",
+    "SPORTS": "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&h=400&fit=crop",
+    "FASHION": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop",
+    "NATURE": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop",
+    "EDUCATION": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop",
+    "HEALTH": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
+};
+
 const Modal = ({ isOpen, onClose, children }) => {
     if (!isOpen) return null; // don't render if closed
 
@@ -67,18 +69,21 @@ const Modal = ({ isOpen, onClose, children }) => {
 const Navbar = (props) => {
     const { navIn } = props;
     const [isOpen, setIsOpen] = useState(false);
-    const links = ['About', 'Businesses', 'Create', 'News'];
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPrefModalOpen, setIsPrefModalOpen] = useState(false);
     const navigate = useNavigate();
     const [modalType, setModalType] = useState(null);
     const [message, setMessage] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-    const [userDetails, setUserDetails] = useState({});
     const [selectedTags, setSelectedTags] = useState([]);
     // const [profileDetail, setProfileDetail] = useState({});
+    const [searchTerm, setSearchTerm] = useState(""); // search state
 
+    // useEffect(() => {
+    //     setIsPrefModalOpen(true);
+    // }, []);
     const toggleTag = (tag) => {
         if (selectedTags.includes(tag)) {
             setSelectedTags(selectedTags.filter((t) => t !== tag));
@@ -188,8 +193,9 @@ const Navbar = (props) => {
                 console.log(user.name);
                 console.log(user.id);
                 // localStorage.setItem("userDetail", {"email":data.user.email,"name":data.user.name,"id":data.user.id});
-                alert("Success");
-                hitProfileApi();
+                // alert("Success");
+                // hitProfileApi();
+                setIsPrefModalOpen(true);
                 // sign up-> ask for preference(dummy) -> profile api hit ({"fullName","","","email","preference"})-> in actual profile({"fullName","profileImageUrl","about","email","preference"})
                 // navigate("/_tabNavigationHome");
                 // hitAutoLogin(data.user.email, data.user.password);
@@ -213,63 +219,64 @@ const Navbar = (props) => {
         <>
 
             <nav style={{
-                position: "fixed",
+                position: "absolute",
                 top: 0,
                 left: 0,
                 right: 0,
                 // zIndex: 1000,
-                padding: "0.1rem 0.8rem 0.1rem 0.8rem",
+                padding: "0rem 0.8rem",
                 display: "flex",
                 // backgroundColor: "#f0d8ec",
                 backgroundColor: "white",
-                borderBottom: "1px solid grey",
+                borderBottom: "1px solid lightgray",
                 alignItems: "center"
             }}>
-                <p style={{
-                    flex: 1,
-                    display: "flex",
-                    marginRight: "0.3rem",
-                    marginLeft: "0.6rem",
-                    color: "#c96bba",
-                    // backgroundColor: "green",
-                    fontWeight: 800,
-                    //  fontSize: 20
-                }}
-                >PinSpire</p>
+                <a
+                    href={navIn === "loggedOut" ? null : "/_tabNavigationHome"}
+                    style={{
+                        flex: 2,
+                        display: "flex",
+                        marginRight: "0.3rem",
+                        marginLeft: "0.6rem",
+                        color: "#c96bba",
+                        // backgroundColor: "green",
+                        fontWeight: 800,
+                        fontSize: "1.3rem"
+                    }}
+                ><p>PinSpire</p></a>
 
-                {/* <input type="text" placeholder="Search for easy dinner, fashion, etc." style={{
-                    // width:"50%", 
-                    flex:1,
-                    backgroundColor: "green",
-                    display:"none",
-                    fontSize:13, 
-                    // padding:5,marginRight:"2%", borderRadius:15,backgroundColor:"lightgrey",borderColor:"plum"
-                    }}/> */}
+                {navIn === "loggedOut" ? null : (
+                    <div style={{
+                        // textAlign: "center", 
+                        // marginBottom: "1rem", 
+                        display: "flex",
+                        flex: 10,
+                        // marginRight: "1rem",
+                        justifyContent: "center",
+                        // gap: "0.5rem",
+                        // backgroundColor:"red"
+                    }}>
+                        <input
+                            type="text"
+                            placeholder="Search ideas..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: "100%",
+                                padding: "10px 16px 10px 40px",
+                                borderRadius: "0.7rem",
+                                border: "1px solid #e8e8e8bb",
+                                backgroundColor: "#e8e8e8bb",
+                                outline: "none",
+                                fontSize: 17,
+                                backgroundImage: "url('https://img.icons8.com/ios-glyphs/30/808080/search--v1.png')",
+                                backgroundSize: "18px",
+                                backgroundPosition: "12px center",
+                                backgroundRepeat: "no-repeat",
+                            }}
+                        />
+                    </div>)}
 
-                {/* <ul style={{
-                    display: "flex",
-                    flex: 8,
-                    marginRight: "0.6rem",
-                    marginLeft: "0.3rem",
-                    justifyContent: "flex-end",
-                    // backgroundColor: "lightblue",
-                    paddingRight: "0.8rem",
-                    listStyle: "none",
-                    gap: "1rem",
-                    fontSize: 13
-                }}
-                    className={`nav-links ${isOpen ? 'active' : ''}`}
-                >
-                    {links.map(link => (
-                        <li key={link} >
-                            <a href={`#${link.toLowerCase()}`} style={{
-                                color: "#266cf9ff",
-                            }} onClick={() => setIsOpen(false)}>
-                                {link}
-                            </a>
-                        </li>
-                    ))}
-                </ul> */}
                 {navIn === "loggedOut" ?
                     (
                         <div style={{
@@ -283,8 +290,8 @@ const Navbar = (props) => {
                             <button onClick={() => navigate("/")} style={{
                                 backgroundColor: "#c96bba",
                                 borderRadius: "1rem",
-                                // padding: "0.7rem 1rem",
-                                fontSize: 13,
+                                padding: "0.6rem 0.8rem",
+                                fontSize: 15,
                                 color: "white",
                             }}>
                                 Log in
@@ -293,10 +300,10 @@ const Navbar = (props) => {
                                 onClick={() => setIsModalOpen(true)}
                                 style={{
                                     backgroundColor: "lightgrey",
+                                    color: "black",
                                     borderRadius: "1rem",
-                                    // padding: "0.7rem 1rem",
-                                    fontSize: 13,
-                                    color: "black"
+                                    padding: "0.6rem 0.8rem",
+                                    fontSize: 15,
                                 }}>
                                 Sign up
                             </button>
@@ -306,7 +313,6 @@ const Navbar = (props) => {
                             // backgroundColor: "pink",
                             display: "flex",
                             flex: 2,
-                            marginRight: "1rem",
                             justifyContent: "end",
                             gap: "0.5rem"
                         }}>
@@ -314,8 +320,8 @@ const Navbar = (props) => {
                             <button onClick={() => navigate("/_profile")} style={{
                                 backgroundColor: "#c96bba",
                                 borderRadius: "1rem",
-                                // padding: "0.7rem 1rem",
-                                fontSize: 13,
+                                padding: "0.6rem 0.8rem",
+                                fontSize: 15,
                                 color: "white",
                             }}>
                                 Profile
@@ -329,10 +335,9 @@ const Navbar = (props) => {
                                 }
                                 style={{
                                     backgroundColor: "lightgrey",
-                                    borderRadius: "1rem",
-                                    // padding: "0.7rem 1rem",
-                                    fontSize: 13,
-                                    color: "black"
+                                    color: "black", borderRadius: "1rem",
+                                    padding: "0.6rem 0.8rem",
+                                    fontSize: 15,
                                 }}>
                                 Log Out
                             </button>
@@ -473,7 +478,7 @@ const Navbar = (props) => {
                             />
                         </div>
 
-                        <div style={{
+                        {/* <div style={{
                             // backgroundColor: "pink",
                             flex: 2,
                             marginRight: "1rem",
@@ -500,7 +505,7 @@ const Navbar = (props) => {
                                     </div>
                                 ))
                             }
-                        </div>
+                        </div> */}
                     </div>
 
                     <button
@@ -508,12 +513,12 @@ const Navbar = (props) => {
                         style={{
                             backgroundColor: "#c96bba",
                             color: "white",
-                            flex: 1,
-                            fontSize: 13,
-                            // width: "100%", 
-                            marginTop: "0.1rem",
+                            marginTop: "0.5rem",
                             marginBottom: "0.1rem",
-                            borderRadius: "1rem"
+                            flex: 1,
+                            borderRadius: "1rem",
+                            padding: "0.6rem 0.8rem",
+                            fontSize: 15,
                         }}>Sign Up</button>
 
                     {/* <p style={{
@@ -592,12 +597,130 @@ const Navbar = (props) => {
                         marginBottom: "0.5rem",
                         // backgroundColor: "firebrick",
                     }}><p style={{ margin: 0 }}>Already a member?{"  "}
-                            <a href="#" style={{
+                            <a href="/" style={{
                                 fontSize: "13px",
                                 fontWeight: "500",
                                 color: "black",
-                            }}>Log in</a></p>
+                            }}>Log in</a>
+                        </p>
                     </div>
+                </div>
+            </Modal>
+
+            <Modal isOpen={isPrefModalOpen} onClose={() => setIsPrefModalOpen(false)}>
+                <div style={{
+                    display: "flex",
+                    flex: 1,
+                    flexDirection: "column",
+                    boxSizing: "border-box",
+                }}>
+                    <p style={{
+                        color: "black",
+                        flex: 1,
+                        marginTop: "1rem",
+                        marginBottom: "0.1rem",
+                        // backgroundColor: "green",
+                        textAlign: "center",
+                        fontWeight: 700,
+                        fontSize: 23
+                    }}
+                    >What are you interested in?</p>
+
+                    <p style={{
+                        color: "black",
+                        flex: 1,
+                        marginTop: "0.05rem",
+                        marginBottom: "0.5rem",
+                        // backgroundColor: "green",
+                        textAlign: "center",
+                        // fontWeight: 700,
+                        fontSize: 14
+                    }}
+                    >This will customize your home feed</p>
+
+                    <div
+                        style={{
+                            flex: 1,
+                            marginRight: "1rem",
+                            marginTop: "0.5rem",
+                            marginBottom: "0.5rem",
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "1rem",
+                            justifyContent: "center"
+                        }}
+                    >
+                        {Object.entries(allTags).map(([tag, imgUrl]) => (
+                            <div
+                                key={tag}
+                                onClick={() => toggleTag(tag)}
+                                style={{
+                                    width: "90px",  // fixed width
+                                    height: "65px", // fixed height
+                                    backgroundImage: `url(${imgUrl})`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                    border: selectedTags.includes(tag)
+                                        ? "3px solid #c96bba"
+                                        : "2px solid #aaa",
+                                    borderRadius: "1rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    fontSize: "13px",
+                                    opacity: selectedTags.includes(tag) ? 1 : 0.6, // 👈 transparency effect
+                                    transition: "opacity 0.3s ease",
+                                    //  backgroundColor: "rgba(0,0,0,0.4)",
+                                    textShadow: "0px 0px 5px rgba(0, 0, 0, 0.77)",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                {tag}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* <div style={{
+                            // backgroundColor: "pink",
+                            flex: 2,
+                            marginRight: "1rem",
+                            marginTop: "0.5rem",
+                            marginBottom: "0.5rem",
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "1rem",
+                        }}>
+                            {
+                                allTags.map((tag) => (
+                                    <div key={tag} onClick={() => toggleTag(tag)} style={{
+                                        // backgroundColor: "lightgrey",
+                                        // border: "1px solid #aaa",
+                                        border: selectedTags.includes(tag)
+                                            ? "2px solid #c96bba"
+                                            : "1px solid #aaa",
+                                        borderRadius: "1rem",
+                                        padding: "0.8rem 1.5rem",
+                                        fontSize: 13,
+                                        color: "#797777ff",
+                                    }}>
+                                        {tag}
+                                    </div>
+                                ))
+                            }
+                        </div> */}
+
+                    <button
+                        onClick={() => hitProfileApi()}
+                        style={{
+                            backgroundColor: "#c96bba",
+                            color: "white",
+                            flex: 1,
+                            borderRadius: "1rem",
+                            padding: "0.6rem 0.8rem",
+                            fontSize: 15,
+                        }}>Submit</button>
                 </div>
             </Modal>
 
