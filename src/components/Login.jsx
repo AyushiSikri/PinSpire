@@ -31,7 +31,10 @@ const Explore = () => {
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json"},
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token") 
+                },
                 body: JSON.stringify({ email: email, password: password })
             });
 
@@ -41,6 +44,7 @@ const Explore = () => {
                 // localStorage.clear();
                 localStorage.setItem("token", data.token);
                 setMessage(data.message);
+                localStorage.setItem("userDetail", JSON.stringify(data.user));
                 //setModalType("success");
                 // hitProfileApi();
                 // navigate("/_tabNavigationHome");
@@ -96,7 +100,11 @@ const Explore = () => {
 
           const res = await fetch(`/api/get_user_profile?email=${encodeURIComponent(email)}`, {
             method: "POST",   // you can also make this GET, but POST will still work
-            headers: { "Content-Type": "application/json" }
+            // headers: { "Content-Type": "application/json" }
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token") 
+            },
         });
             const data = await res.json();
 

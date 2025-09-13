@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 
 const allTags = [
@@ -16,8 +17,6 @@ const allTags = [
 ];
 
 const AddNewPins = () => {
-    const [show, setShow] = useState(true);
-    const [replace, setReplace] = useState(true);
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         multiple: false,
         accept: { "image/*": [], "video/*": [] },
@@ -28,11 +27,12 @@ const AddNewPins = () => {
         }
     });
 
+    const navigate = useNavigate();
+
     const [selectedTags, setSelectedTags] = useState([]);
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [previewUrl, setPreviewUrl] = useState(null);
 
     const toggleTag = (tag) => {
         if (selectedTags.includes(tag)) {
@@ -42,7 +42,6 @@ const AddNewPins = () => {
         }
     }
 
-    // console.log(ize );
     console.log("Debug:", file, selectedTags, title, description);
 
     const hitCreatePinApi = async () => {
@@ -57,31 +56,31 @@ const AddNewPins = () => {
         formData.append("file", file);
         formData.append("title", title);
         formData.append("description", description);
-        //  formData.append("tags", JSON.stringify(selectedTags));
-    const userId = "1"; // Default to user ID 1 for testing
-    
+        const user = JSON.parse(localStorage.getItem("userDetail"));
+        const userId = user?.id; 
+
         // append each tag separately
         selectedTags.forEach((tag) => formData.append("tags", tag));
-formData.append("userId", userId);
+        formData.append("userId", userId);
         try {
             const res = await fetch("/api/create_pin", {
                 method: "POST",
-                // headers: {
-                //     Authorization: "Bearer " + localStorage.getItem("token"),
-                // },
+                headers: { "Authorization": "Bearer " + localStorage.getItem("token") },
                 body: formData,
             });
             if (!res.ok) {
                 throw new Error("Failed to create pin");
+            } else {
+                const data = await res.text();
+                console.log("Pin created:", data);
+                alert("Pin published successfully!");
+                setFile(null);
+                setTitle("");
+                setDescription("");
+                setSelectedTags([]);
+                // alert("Success");
+                navigate("/_profile/created");
             }
-
-            const data = await res.text();
-            console.log("Pin created:", data);
-            alert("Pin published successfully!");
-            setFile(null);
-            setTitle("");
-            setDescription("");
-            setSelectedTags([]);
         } catch (e) {
             console.error(e);
             alert("Something went wrong");
@@ -92,25 +91,20 @@ formData.append("userId", userId);
             width: "100%",
             minHeight: "100vh",
             display: "flex",
-            // flexDirection: "row",
-            // alignItems:"center",
-            // justifyContent:"center"
         }}>
 
             <Navbar navIn="loggedIn" />
             <div style={{
-                paddingTop: "2rem",
-                // marginTop: "4rem",
+                paddingTop: "4.4rem",
                 // backgroundColor: "red",
                 width: "100vw",
                 boxSizing: "border-box",
                 display: "flex",
-                // flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center"
             }}>
                 <div style={{
-                    flex: show ? 9 : 6,
+                    flex: 9,
                     // backgroundColor: "lightblue",
                     display: "flex",
                     justifyContent: "center",
@@ -268,14 +262,7 @@ formData.append("userId", userId);
                                 color: "black",
                                 marginBottom: "0.7rem",
                             }} htmlFor="taggedTopics">Tagged topics</label>
-                            {/* <input type="text" id="taggedTopics" placeholder="Add a tag" required style={{
-                                marginBottom: "1rem",
-                                padding: "12px 10px",
-                                fontSize: "13px",
-                                border: "1px solid #aaa",
-                                borderRadius: "12px",
-                                outlineColor: "#266cf9ff",
-                            }} /> */}
+
                             <div style={{
                                 // backgroundColor: "pink",
                                 flex: 2,
@@ -284,7 +271,7 @@ formData.append("userId", userId);
                                 marginBottom: "0.5rem",
                                 display: "flex",
                                 flexWrap: "wrap",
-                                gap: "1rem",
+                                gap: "0.5rem",
                             }}>
                                 {
                                     allTags.map((tag) => (
@@ -297,149 +284,17 @@ formData.append("userId", userId);
                                             borderRadius: "1rem",
                                             padding: "0.4rem 1rem",
                                             fontSize: 13,
+                                            height: "30px",
+                                            width: "70px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
                                             color: "#797777ff",
                                         }}>
                                             {tag}
                                         </div>
                                     ))
                                 }
-
-                                {/* <div style={{
-                                    // backgroundColor: "yellow",
-                                    display: "flex",
-                                    flex: 1,
-                                    // justifyContent: "center",
-                                    gap: "1rem"
-                                }}>
-                                    <div onClick={() => navigate("/")} style={{
-                                        // backgroundColor: "lightgrey",
-                                        border: "1px solid black",
-                                        borderRadius: "1rem",
-                                        outlineColor: "#c96bba",
-                                        // padding: "0.7rem 1rem",
-                                        fontSize: 13,
-                                        color: "black",
-                                    }}>
-                                        FOOD
-                                    </div>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        style={{
-                                            // backgroundColor: "lightgrey",
-                                            border: "1px solid black",
-                                            borderRadius: "1rem",
-                                            // padding: "0.7rem 1rem",
-                                            fontSize: 13,
-                                            outlineColor: "#c96bba",
-                                            color: "black",
-                                        }}>
-                                        TRAVEL
-                                    </button>
-                                    <button onClick={() => navigate("/")} style={{
-                                        // backgroundColor: "lightgrey",
-                                        border: "1px solid black",
-                                        borderRadius: "1rem",
-                                        // padding: "0.7rem 1rem",
-                                        fontSize: 13,
-                                        outlineColor: "#c96bba",
-                                        color: "black",
-                                    }}>
-                                        FASHION
-                                    </button>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        style={{
-                                            // backgroundColor: "lightgrey",
-                                            border: "1px solid black",
-                                            borderRadius: "1rem",
-                                            // padding: "0.7rem 1rem",
-                                            fontSize: 13,
-                                            color: "black",
-                                            outlineColor: "#c96bba",
-                                        }}>
-                                        TECHNOLOGY
-                                    </button>
-                                    <button onClick={() => navigate("/")} style={{
-                                        // backgroundColor: "lightgrey",
-                                        border: "1px solid black",
-                                        borderRadius: "1rem",
-                                        // padding: "0.7rem 1rem",
-                                        fontSize: 13,
-                                        outlineColor: "#c96bba",
-                                        color: "black",
-                                    }}>
-                                        MUSIC
-                                    </button>
-                                </div>
-                                <div style={{
-                                    // backgroundColor: "orange",
-                                    display: "flex",
-                                    flex: 1,
-                                    // justifyContent: "center",
-                                    gap: "1rem"
-                                }}>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        style={{
-                                            // backgroundColor: "lightgrey",
-                                            border: "1px solid black",
-                                            borderRadius: "1rem",
-                                            // padding: "0.7rem 1rem",
-                                            fontSize: 13,
-                                            outlineColor: "#c96bba",
-                                            color: "black",
-                                        }}>
-                                        SPORTS
-                                    </button>
-                                    <button onClick={() => navigate("/")} style={{
-                                        // backgroundColor: "lightgrey",
-                                        border: "1px solid black",
-                                        borderRadius: "1rem",
-                                        // padding: "0.7rem 1rem",
-                                        fontSize: 13,
-                                        outlineColor: "#c96bba",
-                                        color: "black",
-                                    }}>
-                                        ART
-                                    </button>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        style={{
-                                            // backgroundColor: "lightgrey",
-                                            border: "1px solid black",
-                                            borderRadius: "1rem",
-                                            // padding: "0.7rem 1rem",
-                                            fontSize: 13,
-                                            outlineColor: "#c96bba",
-                                            color: "black",
-                                        }}>
-                                        NATURE
-                                    </button>
-                                    <button onClick={() => navigate("/")} style={{
-                                        // backgroundColor: "lightgrey",
-                                        border: "1px solid black",
-                                        borderRadius: "1rem",
-                                        // padding: "0.7rem 1rem",
-                                        fontSize: 13,
-                                        outlineColor: "#c96bba",
-                                        color: "black",
-                                    }}>
-                                        EDUCATION
-                                    </button>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        style={{
-                                            // backgroundColor: "lightgrey",
-                                            border: "1px solid black",
-                                            borderRadius: "1rem",
-                                            outlineColor: "#c96bba",
-                                            // padding: "0.7rem 1rem",
-                                            fontSize: 13,
-                                            color: "black",
-                                        }}>
-                                        HEALTH
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
 
@@ -457,54 +312,6 @@ formData.append("userId", userId);
                         </div>
                     </div>
                 </div>
-
-                {/* {show &&
-                        (<div style={{
-                            flex: 1,
-                            // backgroundColor: "orange",
-                            display: "flex",
-                            justifyContent: "center",
-                            // padding: "0.7rem 1rem",
-                        }}>
-                            <button
-                                onClick={() =>
-                                    setShow(!show)
-                                }
-                                style={{
-                                    // marginRight: "1rem",
-                                    backgroundColor: "pink",
-
-                                    borderRadius: "1rem",
-                                    // padding: "0.8rem 1rem",
-                                    // fontSize: 15,
-                                    color: "white",
-                                }}>
-                                Hide
-                            </button>
-                        </div>)
-                    } */}
-
-                {!show &&
-
-                    (<div style={{
-                        flex: 3,
-                        backgroundColor: "yellow",
-                        padding: "0.7rem 1rem",
-                    }}>
-                        <button
-                            onClick={() =>
-                                setShow(!show)
-                            }
-                            style={{
-                                marginRight: "1rem",
-                                backgroundColor: "pink",
-                                borderRadius: "1rem",
-                                padding: "0.8rem 1rem",
-                                fontSize: 15,
-                                color: "white",
-                            }}>Show</button>
-                    </div>)
-                }
             </div>
 
         </div>

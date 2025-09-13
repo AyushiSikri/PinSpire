@@ -53,33 +53,33 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserLogin userLogin) {
         try {
-            boolean isValid = userService.loginUser(userLogin);
+            User user = userService.loginUser(userLogin);
             Map<String, Object> response_map = new HashMap<>();
 
-            if (isValid) {
+            if (user != null) {
                 response_map.put("message", "Success");
                 response_map.put("token", jwtService.generateToken(userLogin.getEmail()));
 
-                return ResponseEntity.status(HttpStatus.OK).body(response_map);
-                // return ResponseEntity.ok(responseMap);
-                // return ResponseEntity.status(HttpStatus.CREATED).body(response_map);
+                // Return user object (but exclude password!)
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("id", user.getId());
+                userData.put("name", user.getName());
+                userData.put("email", user.getEmail());
+
+                response_map.put("user", userData);
+
+                return ResponseEntity.ok(response_map);
             } else {
                 response_map.put("message", "Invalid email or password!");
-
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(response_map);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response_map);
             }
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
-
             errorResponse.put("message", "An error occurred during login");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-        // return userService.loginUser(userLogin);
     }
-
+    
     @GetMapping("/hello") // test API
     public String hello() {
         return "Hello from backend!";

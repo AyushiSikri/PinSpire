@@ -1,4 +1,5 @@
 package com.pinspireBackend.pinspireBackend.service;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import com.pinspireBackend.pinspireBackend.dbEntity.User;
 import com.pinspireBackend.pinspireBackend.dbEntity.UserLogin;
 import com.pinspireBackend.pinspireBackend.repository.ProfileRepository;
 import com.pinspireBackend.pinspireBackend.repository.UserRepository;
+
 @Service
 public class UserService {
 
@@ -23,7 +25,7 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists!");
         }
-        User savedUser =userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         // Profile profile = new Profile();
         // profile.setUser(savedUser);
@@ -40,22 +42,20 @@ public class UserService {
     //    return "Invalid email or password!";
     // }
     //&& userRepository.findByPassword(user.getPassword()).isPresent()
-
-    public boolean loginUser(UserLogin userLogin) {
+    public User loginUser(UserLogin userLogin) {
         try {
             // Find user by email
             Optional<User> userOptional = userRepository.findByEmail(userLogin.getEmail());
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                // TODO: Use password encoder to compare encrypted passwords
-                // return passwordEncoder.matches(userLogin.getPassword(), user.getPassword());
-
-                // For now, simple string comparison (NOT SECURE - use password encoder)
-                return user.getPassword().equals(userLogin.getPassword());
+                // For now, plain password check (later replace with password encoder)
+                if (user.getPassword().equals(userLogin.getPassword())) {
+                    return user;
+                }
             }
 
-            return false;
+            return null;
         } catch (Exception e) {
             // Log the error
             System.err.println("Error during login: " + e.getMessage());

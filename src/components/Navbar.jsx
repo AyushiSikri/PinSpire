@@ -100,7 +100,9 @@ const Navbar = (props) => {
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token") },
                 body: JSON.stringify({ email: email, password: password }),
             });
 
@@ -127,8 +129,9 @@ const Navbar = (props) => {
             const user = JSON.parse(localStorage.getItem("userDetail"));
             const res = await fetch("/api/user_profile", {
                 method: "POST",
-                headers: {
+                headers: { 
                     "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token") 
                 },
                 body: JSON.stringify({ email: user?.email, fullName: user?.name, tagsPreference: selectedTags, id: user?.id })
             });
@@ -168,8 +171,9 @@ const Navbar = (props) => {
         try {
             const res = await fetch("/api/auth/signup", {
                 method: "POST",
-                headers: {
+                headers: { 
                     "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token") 
                 },
                 body: JSON.stringify({ email, password, name })
             });

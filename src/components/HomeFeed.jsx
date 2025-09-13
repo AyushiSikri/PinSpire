@@ -28,7 +28,10 @@ const HomeFeed = () => {
             try {
                 const res = await fetch("/api/feed", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                      "Content-Type": "application/json",
+                      "Authorization": "Bearer " + localStorage.getItem("token") 
+                    },
                     body: JSON.stringify(category)
                 });
                 const data = await res.json();
