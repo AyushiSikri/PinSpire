@@ -32,9 +32,17 @@ Pinspire allows users to discover, explore, and create pins based on their perso
 ---
 
 ## 📸 Screenshots / Demo
-👉 Add your **screenshots** and **demo video link** here.  
+👉  A few images are shown below, and the rest can be found in this link: **[📂 Full Demo & Screenshots](https://drive.google.com/drive/folders/1EAWT4NwNzzOha_dS9Zi5C-VY6aZMg8X6?usp=drive_link)**
+
+
+### Sample Screenshots
+<img width="959" height="437" alt="Pinspire_Explore_Feed_SS" src="https://github.com/user-attachments/assets/6665b079-69ab-4c77-aa7c-117d9f5d87d4" />
+
+<img width="959" height="436" alt="Pinspire_Preference_SS" src="https://github.com/user-attachments/assets/924096be-c74b-4957-8093-63acb908a3d0" />
 
 <img width="959" height="436" alt="Pinspire_Create_New_Pin_Details_SS" src="https://github.com/user-attachments/assets/3ce3dee4-46f5-4ca0-a231-172b6cf408c8" />
+
+<img width="959" height="436" alt="Pinspire_Added_New_Pin_SS" src="https://github.com/user-attachments/assets/186f748d-d3f7-43f5-83bd-7631e293ae81" />
 
 ---
 
