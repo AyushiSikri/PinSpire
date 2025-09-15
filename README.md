@@ -31,6 +31,14 @@ Pinspire allows users to discover, explore, and create pins based on their perso
 
 ---
 
+## 📸 Screenshots / Demo
+👉 Add your **screenshots** and **demo video link** here.  
+
+<img width="959" height="436" alt="Pinspire_Create_New_Pin_Details_SS" src="https://github.com/user-attachments/assets/3ce3dee4-46f5-4ca0-a231-172b6cf408c8" />
+
+---
+
+
 ## ⚙️ Installation & Setup
 
 ### 1. Clone the repository
@@ -45,7 +53,7 @@ cd pinspire
 npm install
 npm run dev
 
-
+---
 
 ###👩‍💻 Author
 Ayushi Sikri
