@@ -38,18 +38,18 @@ Pinspire allows users to discover, explore, and create pins based on their perso
 git clone https://github.com/yourusername/pinspire.git
 cd pinspire
 
-**# Backend (Spring Boot + MySQL)**
+## Backend (Spring Boot + MySQL)
 ./gradlew bootRun
 
-**# Frontend (React.js)**
+## Frontend (React.js)
 npm install
 npm run dev
 
 
 
-**👩‍💻 Author**
-**Ayushi Sikri**
+###👩‍💻 Author
+Ayushi Sikri
 
 React.js | React Native | Java | Spring Boot | MySQL
 
-**[LinkedIn] **https://www.linkedin.com/in/ayushi-sikri-893026233/ | **[GitHub]** (https://github.com/AyushiSikri)
+[LinkedIn] https://www.linkedin.com/in/ayushi-sikri-893026233/ | [GitHub] (https://github.com/AyushiSikri)
