@@ -1,12 +1,12 @@
 package com.pinspireBackend.pinspireBackend.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.pinspireBackend.pinspireBackend.dbEntity.CreatePin;
 import com.pinspireBackend.pinspireBackend.dbEntity.CreatePinRequest;
-import com.pinspireBackend.pinspireBackend.dbEntity.CreatePinsResponseDTO;
 import com.pinspireBackend.pinspireBackend.dbEntity.User;
 import com.pinspireBackend.pinspireBackend.repository.CreatePinRepository;
 import com.pinspireBackend.pinspireBackend.repository.UserRepository;

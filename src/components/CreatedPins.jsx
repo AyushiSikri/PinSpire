@@ -155,10 +155,10 @@ const CreatedPins = () => {
             <div style={{
                 // backgroundColor: "red",
                 // marginTop: "0.5rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
+                // display: "flex",
+                // alignItems: "center",
+                // justifyContent: "center",
+                // flexDirection: "column",
             }}>
                 <div style={{ marginTop: "0.5rem" }}>
                     <style>{styles}</style>
@@ -176,11 +176,8 @@ const CreatedPins = () => {
                                         key={idx}
                                     >
                                         <img src={src} alt={`masonry-${idx}`}
-                                            onError={() => handleImageError(src)} />
-                                        <div className="overlay">
-                                            <button className="hover-btn" onClick={() => alert("Save " + idx)}>Save</button>
-                                            <button className="hover-btn secondary" onClick={() => alert("Like " + idx)}>Like</button>
-                                        </div>
+                                            onError={() => handleImageError(src)} 
+                                            />
                                     </div>
                                 );
                             })}

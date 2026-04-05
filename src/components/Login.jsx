@@ -1,139 +1,90 @@
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import pinterestBackground from "../assets/pinterestBackground.jpg";
-import googleIcon from "../assets/googleIcon.png";
 import Navbar from "./Navbar";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "../App.css"
 import { useNavigate } from "react-router-dom";
 import MessageModal from "./MessageModal";
 const Explore = () => {
 
-    // const [showPassword, setShowPassword] = useState(false);
-    // const [value, setValue] = useState("");
-    // const [list, setList] = useState([]);
-    // let count = 0;
-    // const addItemOnClick = (value) => {
-    //     setList((prevList) => [...list, {
-    //         id: count,
-    //         name: value
-    //     }
-    //     ]);
-    //     setValue(value);
-    // }
-
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [modalType, setModalType] = useState(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
+        setLoading(true);
         try {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token") 
                 },
                 body: JSON.stringify({ email: email, password: password })
             });
-
             const data = await res.json();
-            
-            if (res.ok && data.message === "Success") {
-                // localStorage.clear();
+
+            if (res.ok) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userDetail");
                 localStorage.setItem("token", data.token);
-                setMessage(data.message);
                 localStorage.setItem("userDetail", JSON.stringify(data.user));
-                //setModalType("success");
-                // hitProfileApi();
-                // navigate("/_tabNavigationHome");
+                try {
+                    const profileSuccess = await hitProfileApi();
+                    if (profileSuccess) {
+                        navigate("/_tabNavigationHome");
+                    }
+                } catch (err) {
+                    setModalType("error");
+                    setMessage(err.message);
+                }
             } else if (res.status === 401) {
                 setMessage(data.message);
-                //setModalType("error");
-                // alert(data.message);
+                setModalType("error");
             } else if (res.status === 500) {
-                //setModalType("error");
+                setModalType("error");
                 setMessage(data.message);
-                // alert(data.message);
             } else {
-                //setModalType("error");
+                setModalType("error");
                 setMessage("Login Failed");
-                // alert(data || "Login failed");
             }
-            // alert(data);
-            // if (res.ok && data === "Success") {
-            //     setMessage("Success");
-            //     //setModalType("success");
-            //     // navigate("/_profile");
-            // } else if (res.status === 401) {
-            //     setMessage("Invalid email or password!");
-            //     //setModalType("error");
-            //     alert("Invalid email or password!");
-            // } else if (res.status === 500) {
-            //     //setModalType("Server error. Please try again later.");
-            //     alert("Server error. Please try again later.");
-            // } else {
-            //     //setModalType(data || "Login failed");
-            //     alert(data || "Login failed");
-            // }
-
         } catch (e) {
-            //setModalType("error");
-            // setMessage(e.message);
-            alert(e.message);
-            console.log(e);
-            // alert("Network error. Please check your connection.");
+            setModalType("error");
+            setMessage(e.message);
         }
-        finally{
-            hitProfileApi();
+        finally {
+            setLoading(false);
         }
     }
 
     const hitProfileApi = async () => {
-        try {
-        //    const res = await fetch("/api/get_user_profile", {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({ email: email })
-        // });
-
-          const res = await fetch(`/api/get_user_profile?email=${encodeURIComponent(email)}`, {
+        // no setLoading and try catch in this as loginhandle is handling them 
+        const res = await fetch(`/api/get_user_profile?email=${encodeURIComponent(email)}`, {
             method: "POST",   // you can also make this GET, but POST will still work
-            // headers: { "Content-Type": "application/json" }
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token") 
+                "Authorization": "Bearer " + localStorage.getItem("token")
             },
         });
-            const data = await res.json();
+        const data = await res.json();
+console.log("user"+ JSON.stringify(data));
+        if (!res.ok) {
+            throw new Error(data.message || "Profile fetch failed");
+        }
 
-            if (data.message === "Successful Profile Created") {
-                
-                // alert("Success " + JSON.stringify(data));
-              
-                localStorage.setItem("profileDetail", JSON.stringify({
-                    "email": data?.profile?.email,
-                    "fullName": data?.profile?.fullName,
-                    "about": data?.profile?.about,
-                    "profileImageUrl": data?.profile?.profileImageUrl,
-                    "tagsPreference": data?.profile?.tagsPreference,
-                }));
+        if (res.ok) {
+            localStorage.setItem("profileDetail", JSON.stringify({
+                "email": data?.profile?.email,
+                "fullName": data?.profile?.fullName,
+                "about": data?.profile?.about,
+                "profileImageUrl": data?.profile?.profileImageUrl,
+                "tagsPreference": data?.profile?.tagsPreference,
+            }));
 
-                const profileDetail = localStorage.getItem("profileDetail");
-                console.log("Success " + profileDetail);
-
-                navigate("/_tabNavigationHome");
-            }
-            else if (!res.ok) {
-                throw new Error("Profile Creation failed");
-            }
-
-        } catch (err) {
-            // console.error("Error:", err);
-            // alert("Profile Creation failed!");
-            //  setMessage("error");
-            //  //setModalType(err.message);
+            const profileDetail = localStorage.getItem("profileDetail");
+            console.log("Success " + profileDetail);
+            return true;
         }
     }
 
@@ -164,7 +115,6 @@ const Explore = () => {
                         paddingLeft: "2rem",
                         // width: "100vw",
                         height: "100%",
-                        // backgroundColor:"orange",
                         backgroundColor: "rgba(105, 101, 101, 0.67)",// optional dark overlay
                         display: "flex",
                         flexDirection: "row",
@@ -392,14 +342,23 @@ const Explore = () => {
             <MessageModal
                 isOpen={!!modalType}
                 onClose={() => {
-                    modalType === "success" ? navigate("/_profile"):null;
-                    //setModalType(null);
+                    modalType === "success" ? navigate("/_profile") : null;
+                    setModalType(null);
+                    setEmail("");
+                    setPassword("");
                 }}
                 type={modalType}
                 message={
-                  message
+                    message
                 }
             />
+
+            {loading && (
+                <div style={styles.loader_container}>
+                    <div style={styles.spinner} />
+                </div>
+            )}
+
         </div>
     );
 
@@ -416,4 +375,28 @@ const Explore = () => {
     //             </ul>
     //  </>
 }
+const styles = {
+    loader_container: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 999,
+        backgroundColor: "#eeeeee5d"
+    },
+    spinner: {
+        width: "50px",
+        height: "50px",
+        border: "8px solid #eee",
+        borderTop: "8px solid #c96bba",
+        borderRadius: "50%",
+        backdropFilter: "blur(3px)",
+        animation: "spin 1s linear infinite"
+    }
+};
+
 export default Explore;
