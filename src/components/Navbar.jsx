@@ -289,9 +289,9 @@ const Navbar = (props) => {
                             flex: 2,
                             marginRight: "1rem",
                             justifyContent: "end",
-                            gap: "0.5rem"
+                            // gap: "0.5rem"
                         }}>
-                            <button onClick={() => navigate("/")} style={{
+                            {/* <button onClick={() => navigate("/")} style={{
                                 backgroundColor: "#c96bba",
                                 borderRadius: "1rem",
                                 padding: "0.6rem 0.8rem",
@@ -299,11 +299,12 @@ const Navbar = (props) => {
                                 color: "white",
                             }}>
                                 Log in
-                            </button>
+                            </button> */}
                             <button
                                 onClick={() => setIsModalOpen(true)}
                                 style={{
-                                    backgroundColor: "lightgrey",
+                                    //  backgroundColor: "#c96bba",color: "white",
+                                    backgroundColor: "#e4e4e4eb",
                                     color: "black",
                                     borderRadius: "1rem",
                                     padding: "0.6rem 0.8rem",
